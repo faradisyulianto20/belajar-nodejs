@@ -1,35 +1,24 @@
-// console.log('Express Tutorial')
-// console.log('Tes nodemon');
+const express = require('express');
+const path = require('path')
+const app = express();
 
 
-const http = require('http')
+app.get('/', (req, res) => {
+  res.status(200).sendFile(path.resolve(__dirname, './index.html'))
+});
 
-const {readFileSync} = require('fs')
-
-const homePage = readFileSync('./index.html')
-const homeStyle = readFileSync('./style.css')
-
-const server = http.createServer((req, res)=> {
-    // console.log(req.method);
-    // console.log(req.url);
-    const url = req.url
-    if(url === '/'){
-        res.writeHead(200, {'content-type':'text/html'})
-        res.write(homePage)
-        res.end()
-    }
-    else if (url === '/style.css'){
-        res.writeHead(200, {'content-type':'text/css'})
-        res.write(homeStyle)
-        res.end()
-    }
-    else {
-        res.writeHead(404, {'content-type':'text/html'})
-        res.write('<h1>Page is not Found</h1>')
-        res.end()
-    }
-    // console.log('user hit the server');
+app.get('/style.css', (req, res)=> {
+    res.sendFile(path.resolve(__dirname, './style.css'))
 })
 
-server.listen(3000)
+app.get('/about', (req, res) => {
+  res.status(200).send('About Page');
+});
 
+app.all('*', (req, res) => {
+  res.status(404).send('<h1>Page not found</h1>');
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on http://localhost:3000');
+});
